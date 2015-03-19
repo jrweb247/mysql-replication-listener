@@ -343,6 +343,20 @@ int16_t Value::as_int16() const
   return to_int;
 }
 
+int32_t Value::as_int24() const
+{
+  if (m_is_null)
+  {
+    return 0;
+  }
+  int32_t to_int;
+  Protocol_chunk<int32_t> prot_integer(to_int);
+
+  buffer_source buff(m_storage, m_size);
+  buff >> prot_integer;
+  return to_int;
+}
+
 int64_t Value::as_int64() const
 {
   if (m_is_null)
@@ -356,6 +370,7 @@ int64_t Value::as_int64() const
   buff >> prot_integer;
   return to_int;
 }
+
 
 float Value::as_float() const
 {
@@ -441,7 +456,7 @@ void Converter::to(std::string &str, const Value &val) const
     }
     case MYSQL_TYPE_INT24:
     {
-      str = "not implemented";
+      os << val.as_int24();
       str = os.str();
       break;
     }
